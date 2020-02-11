@@ -2,10 +2,102 @@
 //
 
 #include <iostream>
+using namespace std;
+
+class MyException : public exception
+{
+public:
+    virtual const char* what() const throw()
+    {
+        return "Something really bad happened";
+    }
+};
+class MightGoWrong
+{
+public:
+    MightGoWrong()
+    {
+        char *c = new char[9999999];
+        delete[] c;
+    }
+};
+
+void mightGoWrong() {
+    bool error1 = false;
+    bool error2 = true;
+
+    if (error1) {
+        throw "Something is wrong, officer";
+    }
+
+    if (error2) {
+        throw string("Something else went wrong");
+    }
+}
+
+void usesMightGoWrong() {
+    mightGoWrong();
+}
+
+class TestMyException
+{
+public:
+    void goesWrong()
+    {
+        throw MyException();
+    }
+};
+void testGoWrong()
+{
+    bool check = true;
+
+    if (check)
+    {
+        throw 1.2l;
+    }
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    try {
+        testGoWrong();
+    }
+    catch (int e) {
+        cout << "Error code:" << e<<endl;
+    }
+    catch (char const* e) {
+        cout << "Error message:" << e << endl;
+    }
+    catch (string e) {
+        cout << "String error message:" << e << endl;
+    }
+    catch (float e) {
+        cout << "Float error message: " << e << endl;
+    }
+    catch (double e) {
+        cout << "Double error message: " << e << endl;
+    }
+    catch (long double e) {
+        cout << "Long double error message: " << e << endl;
+    }
+
+    try {
+        MightGoWrong test;
+    }
+    catch (bad_alloc e) {
+        cout << "Standard error: " << e.what() << endl;
+    }
+
+    try {
+        TestMyException test;
+        test.goesWrong();
+    }
+    catch (MyException & e)
+    {
+        cout << "Custom error: " << e.what() << endl;
+    }
+    cout << "Still running"<< endl;
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
